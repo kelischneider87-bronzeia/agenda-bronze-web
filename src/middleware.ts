@@ -11,7 +11,21 @@ const ROTAS_PROTEGIDAS = [
   "/protocolos",
 ];
 
-function rotaProtegida(pathname: string) {
+const ROTAS_PUBLICAS = [
+  "/",
+  "/login",
+  "/agendar-meu-bronze",
+  "/api/login",
+  "/api/logout",
+];
+
+function ehRotaPublica(pathname: string) {
+  return ROTAS_PUBLICAS.some(
+    (rota) => pathname === rota || pathname.startsWith(`${rota}/`)
+  );
+}
+
+function ehRotaProtegida(pathname: string) {
   return ROTAS_PROTEGIDAS.some(
     (rota) => pathname === rota || pathname.startsWith(`${rota}/`)
   );
@@ -29,7 +43,20 @@ async function gerarToken(senha: string, segredo: string) {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (!rotaProtegida(pathname)) {
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/favicon.ico") ||
+    pathname.startsWith("/robots.txt") ||
+    pathname.startsWith("/sitemap.xml")
+  ) {
+    return NextResponse.next();
+  }
+
+  if (ehRotaPublica(pathname)) {
+    return NextResponse.next();
+  }
+
+  if (!ehRotaProtegida(pathname)) {
     return NextResponse.next();
   }
 
@@ -39,7 +66,7 @@ export async function middleware(request: NextRequest) {
   if (!senhaAdmin) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
-    url.searchParams.set("erro", "senha_nao_configurada");
+    url.searchParams.set("from", pathname);
     return NextResponse.redirect(url);
   }
 
@@ -52,7 +79,7 @@ export async function middleware(request: NextRequest) {
 
   const url = request.nextUrl.clone();
   url.pathname = "/login";
-  url.searchParams.set("from", `${pathname}${request.nextUrl.search}`);
+  url.searchParams.set("from", pathname);
 
   return NextResponse.redirect(url);
 }
