@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import DatePickerBR from "@/components/DatePickerBR";
 
 interface Empresa {
   id: string;
@@ -897,15 +898,20 @@ export default function AgendarMeuBronzePage() {
                 </select>
               </div>
 
-              <CampoTexto
-                label="Data *"
-                valor={data}
-                setValor={(valor) => {
-                  setData(valor);
-                  setHora("");
-                }}
-                tipo="date"
-              />
+              <div>
+                <label className="mb-1 block text-sm text-zinc-300">
+                  Data *
+                </label>
+                <DatePickerBR
+                  value={data}
+                  onChange={(valor) => {
+                    setData(valor);
+                    setHora("");
+                  }}
+                  min={new Date().toISOString().split("T")[0]}
+                  className="w-full rounded-xl border border-zinc-700 bg-black px-4 py-3 text-white outline-none focus:border-[#d7b56d]"
+                />
+              </div>
 
               <div>
                 <label className="mb-1 block text-sm text-zinc-300">
@@ -956,7 +962,14 @@ export default function AgendarMeuBronzePage() {
               <CampoTexto label="Nome completo *" valor={nomeCompleto} setValor={setNomeCompleto} />
               <CampoTexto label="CPF *" valor={cpf} setValor={setCpf} />
               <CampoTexto label="Email *" valor={email} setValor={setEmail} tipo="email" />
-              <CampoTexto label="Data de nascimento *" valor={dataNascimento} setValor={setDataNascimento} tipo="date" />
+              <div>
+                  <label className="mb-1 block text-sm text-zinc-300">Data de nascimento *</label>
+                  <DatePickerBR
+                    value={dataNascimento}
+                    onChange={setDataNascimento}
+                    className="w-full rounded-xl border border-zinc-700 bg-black px-4 py-3 text-white outline-none focus:border-[#d7b56d]"
+                  />
+                </div>
               <CampoTexto label="Instagram" valor={instagram} setValor={setInstagram} placeholder="@seuinstagram" />
               <CampoTexto label="Telefone para contato *" valor={telefone} setValor={setTelefone} placeholder="51999999999" />
 
