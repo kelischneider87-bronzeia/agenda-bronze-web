@@ -2,22 +2,27 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ReactNode } from "react";
 
-export default function AppShell({ children }: { children: React.ReactNode }) {
+const ROTAS_COM_MENU = [
+  "/dashboard",
+  "/agenda",
+  "/clientes",
+  "/novo-cliente",
+  "/novo-agendamento",
+  "/editar-agendamento",
+  "/novo-protocolo",
+  "/protocolos",
+];
+
+export default function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
-  const paginasPublicas = ["/agendar-meu-bronze", "/login"];
-
-  const paginaPublica = paginasPublicas.some((rota) =>
-    pathname.startsWith(rota)
+  const mostrarMenu = ROTAS_COM_MENU.some(
+    (rota) => pathname === rota || pathname.startsWith(`${rota}/`)
   );
 
-  async function sair() {
-    await fetch("/api/logout", { method: "POST" });
-    window.location.href = "/login";
-  }
-
-  if (paginaPublica) {
+  if (!mostrarMenu) {
     return <>{children}</>;
   }
 
@@ -95,14 +100,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </nav>
 
         <div className="absolute bottom-8 left-6 right-6 border-t border-zinc-900 pt-8">
-          <button
-            type="button"
-            onClick={sair}
-            className="flex w-full items-center gap-4 rounded-2xl px-5 py-4 text-left text-zinc-300 transition hover:bg-[#15100d] hover:text-white"
+          <Link
+            href="/login"
+            className="flex items-center gap-4 rounded-2xl px-5 py-4 text-zinc-300 transition hover:bg-[#15100d] hover:text-white"
           >
             <span className="text-xl">↪</span>
             Sair
-          </button>
+          </Link>
 
           <p className="mt-8 text-xs text-zinc-700">Agenda Bronze © 2026</p>
         </div>
