@@ -1,119 +1,94 @@
-export default function Home() {
+import Link from "next/link";
+
+export default function HomePage() {
   return (
-    <main className="min-h-screen bg-black text-white">
-      {/* Navbar */}
-      <header className="fixed top-0 z-50 w-full border-b border-[#D4AF37]/20 bg-black/80 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <h1 className="text-2xl font-bold text-[#D4AF37]">
+    <main className="min-h-screen bg-[#070403] text-white">
+      <section className="mx-auto flex min-h-screen w-full max-w-6xl flex-col items-center justify-center px-6 py-16 text-center">
+        <div className="mb-8 rounded-full border border-[#3a2a17] bg-black/40 px-6 py-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#d7b56d]">
             Agenda Bronze
-          </h1>
-
-          <nav className="hidden gap-8 text-sm text-gray-300 md:flex">
-            <a href="#">Início</a>
-            <a href="#">Recursos</a>
-            <a href="#">Planos</a>
-            <a href="#">Contato</a>
-          </nav>
-
-          <button className="rounded-full bg-[#D4AF37] px-5 py-2 text-sm font-semibold text-black transition hover:scale-105">
-            Entrar
-          </button>
+          </p>
         </div>
-      </header>
 
-      {/* Hero */}
-      <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-6">
-        {/* Glow */}
-        <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
+        <h1 className="max-w-4xl text-5xl font-black leading-tight md:text-7xl">
+          Agendamento premium para bronzeamento a jato.
+        </h1>
 
-        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-20 md:grid-cols-2">
-          {/* Texto */}
-          <div>
-            <span className="mb-4 inline-block rounded-full border border-[#D4AF37]/30 px-4 py-2 text-sm text-[#D4AF37]">
-              Plataforma Premium para Bronzeamento a Jato
-            </span>
+        <p className="mt-6 max-w-3xl text-lg leading-relaxed text-zinc-300 md:text-xl">
+          Escolha abaixo se deseja solicitar seu horário de bronzeamento ou
+          acessar o painel administrativo da equipe.
+        </p>
 
-            <h1 className="mb-6 text-5xl font-bold leading-tight md:text-7xl">
-              Gerencie seu studio com mais organização e autoridade.
-            </h1>
-
-            <p className="mb-10 max-w-xl text-lg text-gray-400">
-              Agenda, clientes, financeiro, protocolos e automações em uma
-              única plataforma criada especialmente para profissionais do
-              bronzeamento a jato.
+        <div className="mt-10 grid w-full max-w-3xl gap-5 md:grid-cols-2">
+          <Link
+            href="/agendar-meu-bronze"
+            className="group rounded-[2rem] border border-[#d7b56d] bg-[#d7b56d] p-8 text-left text-black shadow-2xl transition hover:-translate-y-1 hover:bg-[#f1d58a]"
+          >
+            <p className="text-xs font-bold uppercase tracking-[0.3em]">
+              Cliente
             </p>
 
-            <div className="flex flex-wrap gap-4">
-              <button className="rounded-full bg-[#D4AF37] px-8 py-4 font-semibold text-black transition hover:scale-105">
-                Começar Agora
-              </button>
+            <h2 className="mt-4 text-3xl font-black">Agendar meu bronze</h2>
 
-              <button className="rounded-full border border-[#D4AF37] px-8 py-4 font-semibold text-[#D4AF37] transition hover:bg-[#D4AF37] hover:text-black">
-                Ver Demonstração
-              </button>
+            <p className="mt-4 text-sm font-medium leading-relaxed text-black/70">
+              Escolha serviço, data, horário e envie sua solicitação de
+              agendamento para a equipe.
+            </p>
+
+            <div className="mt-8 font-bold">Começar agendamento →</div>
+          </Link>
+
+          <Link
+            href="/dashboard"
+            className="group rounded-[2rem] border border-[#3a2a17] bg-[#15100d] p-8 text-left shadow-2xl transition hover:-translate-y-1 hover:border-[#d7b56d]"
+          >
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#d7b56d]">
+              Equipe
+            </p>
+
+            <h2 className="mt-4 text-3xl font-black">Acessar painel</h2>
+
+            <p className="mt-4 text-sm leading-relaxed text-zinc-400">
+              Área protegida para visualizar agenda, clientes, solicitações,
+              financeiro e configurações.
+            </p>
+
+            <div className="mt-8 font-bold text-[#d7b56d]">
+              Entrar no painel →
             </div>
-          </div>
-
-          {/* Mockup */}
-          <div className="relative">
-            <div className="rounded-[30px] border border-[#D4AF37]/20 bg-gradient-to-b from-[#1A1A1A] to-black p-6 shadow-2xl shadow-[#D4AF37]/10">
-              <div className="mb-6 flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-400">Próximo Atendimento</p>
-                  <h3 className="text-2xl font-bold">
-                    Cliente Premium
-                  </h3>
-                </div>
-
-                <div className="rounded-full bg-[#D4AF37] px-4 py-2 text-sm font-semibold text-black">
-                  14:30
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="rounded-2xl bg-white/5 p-4">
-                  <p className="text-sm text-gray-400">Faturamento Mensal</p>
-                  <h3 className="text-3xl font-bold text-[#D4AF37]">
-                    R$ 12.480
-                  </h3>
-                </div>
-
-                <div className="rounded-2xl bg-white/5 p-4">
-                  <p className="text-sm text-gray-400">
-                    Clientes Atendidas
-                  </p>
-                  <h3 className="text-3xl font-bold">
-                    184
-                  </h3>
-                </div>
-
-                <div className="rounded-2xl bg-white/5 p-4">
-                  <p className="text-sm text-gray-400">
-                    Agenda da Semana
-                  </p>
-
-                  <div className="mt-4 space-y-3">
-                    <div className="flex items-center justify-between rounded-xl bg-black/40 p-3">
-                      <span>Amanda</span>
-                      <span className="text-[#D4AF37]">09:00</span>
-                    </div>
-
-                    <div className="flex items-center justify-between rounded-xl bg-black/40 p-3">
-                      <span>Fernanda</span>
-                      <span className="text-[#D4AF37]">11:30</span>
-                    </div>
-
-                    <div className="flex items-center justify-between rounded-xl bg-black/40 p-3">
-                      <span>Juliana</span>
-                      <span className="text-[#D4AF37]">14:30</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          </Link>
         </div>
+
+        <div className="mt-12 grid w-full max-w-5xl gap-4 md:grid-cols-3">
+          <Card
+            titulo="Agendamento online"
+            texto="A cliente solicita o horário pela página pública e a equipe acompanha tudo no painel."
+          />
+
+          <Card
+            titulo="Painel protegido"
+            texto="Acesso administrativo com senha para manter os dados internos da equipe protegidos."
+          />
+
+          <Card
+            titulo="Dados em tempo real"
+            texto="Agenda, clientes e solicitações conectados ao Supabase para funcionar online."
+          />
+        </div>
+
+        <p className="mt-12 text-xs text-zinc-600">
+          Agenda Bronze © 2026 • Sistema premium para studios
+        </p>
       </section>
     </main>
+  );
+}
+
+function Card({ titulo, texto }: { titulo: string; texto: string }) {
+  return (
+    <div className="rounded-[1.5rem] border border-[#2a1d12] bg-[#100b08] p-6 text-left">
+      <p className="text-sm font-bold text-[#d7b56d]">{titulo}</p>
+      <p className="mt-3 text-sm leading-relaxed text-zinc-400">{texto}</p>
+    </div>
   );
 }
