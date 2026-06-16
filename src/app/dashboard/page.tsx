@@ -120,8 +120,36 @@ const EMPRESA_PADRAO: Empresa = {
   ativo: true,
 };
 
+function dataParaISO(valor: string | null | undefined) {
+  if (!valor) return "";
+  const texto = String(valor).trim();
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(texto)) return texto;
+
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(texto)) {
+    const [dia, mes, ano] = texto.split("/");
+    return `${ano}-${mes}-${dia}`;
+  }
+
+  return texto;
+}
+
+function dataParaBR(valor: string | null | undefined) {
+  if (!valor) return "";
+  const texto = String(valor).trim();
+
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(texto)) return texto;
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(texto)) {
+    const [ano, mes, dia] = texto.split("-");
+    return `${dia}/${mes}/${ano}`;
+  }
+
+  return texto;
+}
+
 function hojeISO() {
-  return new Date().toISOString().split("T")[0];
+  return dataParaBR(new Date().toISOString().split("T")[0]);
 }
 
 function cortarHora(valor: string) {
@@ -140,11 +168,8 @@ function limparNumeros(texto: string | null | undefined) {
   return (texto || "").replace(/\D/g, "");
 }
 
-function formatarData(dataISO: string | null | undefined) {
-  if (!dataISO) return "";
-  const [ano, mes, dia] = dataISO.split("-");
-  if (!ano || !mes || !dia) return dataISO;
-  return `${dia}/${mes}/${ano}`;
+function formatarData(valor: string | null | undefined) {
+  return dataParaBR(valor);
 }
 
 function formatarMoeda(valor: number) {
@@ -176,7 +201,8 @@ function gerarHorarios(inicio: string, fim: string, intervalo: number) {
   return lista;
 }
 
-function diaSemana(dataISO: string) {
+function diaSemana(valor: string) {
+  const dataISO = dataParaISO(valor);
   return String(new Date(`${dataISO}T12:00:00`).getDay());
 }
 
@@ -338,7 +364,7 @@ export default function DashboardPage() {
       nome_completo: item.nome_completo || "",
       cpf: item.cpf || "",
       email: item.email || "",
-      data_nascimento: item.data_nascimento || null,
+      data_nascimento: item.data_nascimento ? dataParaBR(item.data_nascimento) : null,
       instagram: item.instagram || "",
       endereco_completo: item.endereco_completo || "",
       telefone: item.telefone || "",
@@ -394,7 +420,7 @@ export default function DashboardPage() {
       profissional_id: item.profissional_id || null,
       servico: item.servico || "",
       profissional_nome: item.profissional_nome || "",
-      data: item.data || "",
+      data: dataParaBR(item.data || ""),
       hora: cortarHora(item.hora || ""),
       valor: Number(item.valor || 0),
       sinal: Number(item.sinal || 0),
@@ -426,7 +452,7 @@ export default function DashboardPage() {
 
   const agendamentosDia = useMemo(() => {
     return agendamentos
-      .filter((a) => a.data === dataAgenda && a.status !== "Cancelado")
+      .filter((a) => dataParaBR(a.data) === dataParaBR(dataAgenda) && a.status !== "Cancelado")
       .filter((a) => !filtroProfissional || a.profissional_id === filtroProfissional)
       .sort((a, b) => a.hora.localeCompare(b.hora));
   }, [agendamentos, dataAgenda, filtroProfissional]);
@@ -434,7 +460,7 @@ export default function DashboardPage() {
   const solicitacoesSite = useMemo(() => {
     return agendamentos
       .filter((a) => a.origem === "Agendamento público" && a.status === "Agendado")
-      .sort((a, b) => `${a.data} ${a.hora}`.localeCompare(`${b.data} ${b.hora}`));
+      .sort((a, b) => `${dataParaISO(a.data)} ${a.hora}`.localeCompare(`${dataParaISO(b.data)} ${b.hora}`));
   }, [agendamentos]);
 
   const agendamentosBusca = useMemo(() => {
@@ -579,7 +605,7 @@ export default function DashboardPage() {
         nome_completo: clienteForm.nome_completo,
         cpf: clienteForm.cpf,
         email: clienteForm.email,
-        data_nascimento: clienteForm.data_nascimento || null,
+        data_nascimento: clienteForm.data_nascimento ? dataParaISO(clienteForm.data_nascimento) : null,
         instagram: clienteForm.instagram,
         endereco_completo: clienteForm.endereco_completo,
         telefone: clienteForm.telefone,
@@ -652,7 +678,7 @@ export default function DashboardPage() {
         profissional_id: agendamentoForm.profissional_id || null,
         servico: servico?.nome || "Serviço",
         profissional_nome: profissional?.nome || "",
-        data: agendamentoForm.data,
+        data: dataParaISO(agendamentoForm.data),
         hora: agendamentoForm.hora,
         valor: Number(agendamentoForm.valor || 0),
         sinal: Number(agendamentoForm.sinal || 0),

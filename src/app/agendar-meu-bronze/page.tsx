@@ -117,6 +117,35 @@ const DIAS_NOMES: Record<string, string> = {
   "6": "Sábado",
 };
 
+function dataParaISO(valor: string | null | undefined) {
+  if (!valor) return "";
+  const texto = String(valor).trim();
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(texto)) return texto;
+
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(texto)) {
+    const [dia, mes, ano] = texto.split("/");
+    return `${ano}-${mes}-${dia}`;
+  }
+
+  return texto;
+}
+
+function dataParaBR(valor: string | null | undefined) {
+  if (!valor) return "";
+  const texto = String(valor).trim();
+
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(texto)) return texto;
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(texto)) {
+    const [ano, mes, dia] = texto.split("-");
+    return `${dia}/${mes}/${ano}`;
+  }
+
+  return texto;
+}
+
+
 export default function AgendarMeuBronzePage() {
   const [carregando, setCarregando] = useState(true);
   const [salvando, setSalvando] = useState(false);
@@ -281,7 +310,7 @@ export default function AgendarMeuBronzePage() {
       nome_completo: item.nome_completo || "",
       cpf: item.cpf || "",
       email: item.email || "",
-      data_nascimento: item.data_nascimento || null,
+      data_nascimento: item.data_nascimento ? dataParaBR(item.data_nascimento) : null,
       instagram: item.instagram || "",
       endereco_completo: item.endereco_completo || "",
       telefone: item.telefone || "",
@@ -306,7 +335,7 @@ export default function AgendarMeuBronzePage() {
       profissional_id: item.profissional_id || null,
       servico: item.servico || "",
       profissional_nome: item.profissional_nome || "",
-      data: item.data || "",
+      data: dataParaBR(item.data || ""),
       hora: cortarHora(item.hora || ""),
       valor: Number(item.valor || 0),
       sinal: Number(item.sinal || 0),
@@ -334,7 +363,8 @@ export default function AgendarMeuBronzePage() {
     return (texto || "").replace(/\D/g, "");
   }
 
-  function diaDaSemana(dataISO: string) {
+  function diaDaSemana(dataBR: string) {
+    const dataISO = dataParaISO(dataBR);
     return String(new Date(`${dataISO}T12:00:00`).getDay());
   }
 
@@ -369,11 +399,8 @@ export default function AgendarMeuBronzePage() {
     });
   }
 
-  function formatarData(dataISO: string) {
-    if (!dataISO) return "";
-    const [ano, mes, dia] = dataISO.split("-");
-    if (!ano || !mes || !dia) return dataISO;
-    return `${dia}/${mes}/${ano}`;
+  function formatarData(valor: string) {
+    return dataParaBR(valor);
   }
 
   const servicosAtivos = useMemo(
@@ -430,7 +457,7 @@ export default function AgendarMeuBronzePage() {
   function horarioOcupado(horario: string) {
     return agendamentos.some((agendamento) => {
       if (agendamento.status === "Cancelado") return false;
-      if (agendamento.data !== data) return false;
+      if (dataParaBR(agendamento.data) !== dataParaBR(data)) return false;
       if (cortarHora(agendamento.hora) !== horario) return false;
 
       if (profissionalId) {
@@ -539,7 +566,7 @@ export default function AgendarMeuBronzePage() {
             nome_completo: nomeCompleto,
             cpf,
             email,
-            data_nascimento: dataNascimento || null,
+            data_nascimento: dataNascimento ? dataParaISO(dataNascimento) : null,
             instagram,
             endereco_completo: enderecoCompleto,
             telefone,
@@ -569,7 +596,7 @@ export default function AgendarMeuBronzePage() {
           profissional_id: profissionalSelecionada?.id || null,
           servico: servicoSelecionado?.nome || "Serviço",
           profissional_nome: profissionalSelecionada?.nome || "",
-          data,
+          data: dataParaISO(data),
           hora,
           valor: servicoSelecionado?.valor || 0,
           sinal: servicoSelecionado?.sinal || 0,

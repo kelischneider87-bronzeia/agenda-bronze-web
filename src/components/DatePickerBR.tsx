@@ -44,16 +44,6 @@ function valorParaBR(valor: string) {
   return valorLimpo;
 }
 
-function isoParaBR(valorIso: string) {
-  if (!valorIso) return "";
-
-  const [ano, mes, dia] = valorIso.split("-");
-
-  if (!ano || !mes || !dia) return "";
-
-  return `${dia}/${mes}/${ano}`;
-}
-
 export default function DatePickerBR({
   value,
   onChange,
@@ -81,8 +71,8 @@ export default function DatePickerBR({
   }
 
   function alterarData(valorIsoSelecionado: string) {
-    const dataBR = isoParaBR(valorIsoSelecionado);
-    onChange(dataBR);
+    // Mantém o sistema trabalhando em formato brasileiro também.
+    onChange(valorParaBR(valorIsoSelecionado));
   }
 
   return (
