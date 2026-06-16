@@ -7,53 +7,49 @@ type DatePickerBRProps = {
   onChange: (value: string) => void;
   className?: string;
   min?: string;
+  placeholder?: string;
 };
 
 function valorParaIso(valor: string) {
   if (!valor) return "";
 
-  // Já está no formato ISO: 2026-06-15
-  if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) {
-    return valor;
+  const valorLimpo = valor.trim();
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(valorLimpo)) {
+    return valorLimpo;
   }
 
-  // Está no formato BR: 15/06/2026
-  const partes = valor.split("/");
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(valorLimpo)) {
+    const [dia, mes, ano] = valorLimpo.split("/");
+    return `${ano}-${mes}-${dia}`;
+  }
 
-  if (partes.length !== 3) return "";
-
-  const [dia, mes, ano] = partes;
-
-  if (!dia || !mes || !ano) return "";
-
-  return `${ano}-${mes.padStart(2, "0")}-${dia.padStart(2, "0")}`;
+  return "";
 }
 
 function valorParaBR(valor: string) {
   if (!valor) return "";
 
-  // Está no formato ISO: 2026-06-15
-  if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) {
-    const [ano, mes, dia] = valor.split("-");
+  const valorLimpo = valor.trim();
+
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(valorLimpo)) {
+    return valorLimpo;
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(valorLimpo)) {
+    const [ano, mes, dia] = valorLimpo.split("-");
     return `${dia}/${mes}/${ano}`;
   }
 
-  // Já está no formato BR: 15/06/2026
-  if (/^\d{2}\/\d{2}\/\d{4}$/.test(valor)) {
-    return valor;
-  }
-
-  return valor;
+  return valorLimpo;
 }
 
-function isoParaBr(dataIso: string) {
-  if (!dataIso) return "";
+function isoParaBR(valorIso: string) {
+  if (!valorIso) return "";
 
-  const partes = dataIso.split("-");
+  const [ano, mes, dia] = valorIso.split("-");
 
-  if (partes.length !== 3) return "";
-
-  const [ano, mes, dia] = partes;
+  if (!ano || !mes || !dia) return "";
 
   return `${dia}/${mes}/${ano}`;
 }
@@ -63,8 +59,13 @@ export default function DatePickerBR({
   onChange,
   className,
   min,
+  placeholder = "Selecione a data",
 }: DatePickerBRProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const valorIso = valorParaIso(value);
+  const valorBR = valorParaBR(value);
+  const minIso = min ? valorParaIso(min) : undefined;
 
   function abrirCalendario() {
     const input = inputRef.current;
@@ -79,29 +80,31 @@ export default function DatePickerBR({
     }
   }
 
-  const valorIso = valorParaIso(value);
-  const valorBR = valorParaBR(value);
+  function alterarData(valorIsoSelecionado: string) {
+    const dataBR = isoParaBR(valorIsoSelecionado);
+    onChange(dataBR);
+  }
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <button
         type="button"
         onClick={abrirCalendario}
         className={
           className ||
-          "w-full rounded-2xl border border-zinc-700 bg-black px-4 py-4 text-left text-white outline-none transition focus:border-[#d7b56d]"
+          "w-full rounded-2xl border border-[#d7b56d] bg-black px-4 py-4 text-left font-semibold text-white outline-none transition hover:border-[#f1d58a] focus:border-[#f1d58a]"
         }
       >
-        {valorBR || "Selecione a data"}
+        {valorBR || placeholder}
       </button>
 
       <input
         ref={inputRef}
         type="date"
         value={valorIso}
-        min={min ? valorParaIso(min) : undefined}
-        onChange={(event) => onChange(isoParaBr(event.target.value))}
-        className="pointer-events-none absolute inset-0 h-full w-full opacity-0"
+        min={minIso}
+        onChange={(event) => alterarData(event.target.value)}
+        className="absolute left-0 top-0 h-px w-px opacity-0"
         tabIndex={-1}
         aria-hidden="true"
       />
