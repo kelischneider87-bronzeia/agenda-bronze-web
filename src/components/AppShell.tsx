@@ -17,8 +17,8 @@ const ROTAS_COM_MENU = [
 
 export default function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const abaAtual = searchParams.get("aba") || "agenda";
 
@@ -46,7 +46,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
         <div className="mb-12">
           <button
             type="button"
-            onClick={() => router.push("/dashboard")}
+            onClick={() => router.push("/dashboard?aba=agenda")}
             className="text-left"
           >
             <h1 className="text-4xl font-bold leading-tight text-yellow-400">
@@ -62,37 +62,32 @@ export default function AppShell({ children }: { children: ReactNode }) {
         </div>
 
         <nav className="space-y-3">
-          <MenuLink
-            href="/dashboard"
-            ativo={pathname === "/dashboard" && abaAtual === "agenda"}
-          >
+          <MenuLink href="/dashboard?aba=agenda" ativo={pathname === "/dashboard" && abaAtual === "agenda"}>
             <span className="text-xl">▦</span>
             Dashboard
           </MenuLink>
 
-          <MenuLink
-            href="/dashboard?aba=agenda"
-            ativo={pathname === "/dashboard" && abaAtual === "agenda"}
-          >
+          <MenuLink href="/dashboard?aba=agenda" ativo={pathname === "/dashboard" && abaAtual === "agenda"}>
             <span className="text-xl">▣</span>
             Agenda
           </MenuLink>
 
-          <MenuLink
-            href="/dashboard?aba=clientes"
-            ativo={pathname === "/dashboard" && abaAtual === "clientes"}
-          >
+          <MenuLink href="/dashboard?aba=clientes" ativo={pathname === "/dashboard" && abaAtual === "clientes"}>
             <span className="text-xl">◉</span>
             Clientes
           </MenuLink>
 
-          <MenuLink
-            href="/dashboard?aba=financeiro"
-            ativo={pathname === "/dashboard" && abaAtual === "financeiro"}
-          >
+          <MenuLink href="/dashboard?aba=financeiro" ativo={pathname === "/dashboard" && abaAtual === "financeiro"}>
             <span className="text-xl">R$</span>
             Financeiro
           </MenuLink>
+
+          <MenuLink href="/dashboard?aba=empresa" ativo={pathname === "/dashboard" && abaAtual === "empresa"}>
+            <span className="text-xl">✦</span>
+            Empresa
+          </MenuLink>
+
+          <div className="my-6 border-t border-zinc-900" />
 
           <MenuLink href="/dashboard?acao=novo-cliente" ativo={false}>
             <span className="text-xl">＋</span>
@@ -104,10 +99,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
             Novo Agendamento
           </MenuLink>
 
-          <MenuLink
-            href="/dashboard?aba=protocolos"
-            ativo={pathname === "/dashboard" && abaAtual === "protocolos"}
-          >
+          <MenuLink href="/dashboard?aba=agenda" ativo={false}>
             <span className="text-xl">▧</span>
             Protocolos
           </MenuLink>

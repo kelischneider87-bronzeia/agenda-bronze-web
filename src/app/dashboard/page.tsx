@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import DatePickerBR from "@/components/DatePickerBR";
 
@@ -214,6 +215,8 @@ function nomesDias(ids: string[]) {
 }
 
 export default function DashboardPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [aba, setAba] = useState<Aba>("agenda");
   const [carregando, setCarregando] = useState(true);
   const [salvando, setSalvando] = useState(false);
@@ -889,6 +892,29 @@ export default function DashboardPage() {
     const msg = `${saudacao} Seu agendamento na Divino Bronze para ${a.servico} ${statusTexto} para ${formatarData(a.data)} às ${a.hora}. Valor do atendimento: ${formatarMoeda(a.valor)}. ${sinalTexto} Qualquer dúvida, estou à disposição.`;
     return `https://wa.me/55${limparNumeros(cliente?.telefone)}?text=${encodeURIComponent(msg)}`;
   }
+
+
+  useEffect(() => {
+    const abaParam = searchParams.get("aba");
+    const acaoParam = searchParams.get("acao");
+
+    if (abaParam === "agenda" || abaParam === "clientes" || abaParam === "financeiro" || abaParam === "empresa") {
+      setAba(abaParam);
+    }
+
+    if (acaoParam === "novo-cliente") {
+      setAba("clientes");
+      limparClienteForm();
+      setModalCliente(true);
+      router.replace("/dashboard?aba=clientes");
+    }
+
+    if (acaoParam === "novo-agendamento") {
+      setAba("agenda");
+      abrirNovoAgendamento();
+      router.replace("/dashboard?aba=agenda");
+    }
+  }, [searchParams, router]);
 
   if (carregando) {
     return <TelaCentro titulo="Carregando painel..." texto="Buscando dados no Supabase." />;
