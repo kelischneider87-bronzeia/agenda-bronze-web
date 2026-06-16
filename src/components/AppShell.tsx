@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ReactNode } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 
 const ROTAS_COM_MENU = [
   "/dashboard",
@@ -17,14 +16,18 @@ const ROTAS_COM_MENU = [
 
 export default function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   const abaAtual = searchParams.get("aba") || "agenda";
+  const acaoAtual = searchParams.get("acao") || "";
 
   const mostrarMenu = ROTAS_COM_MENU.some(
     (rota) => pathname === rota || pathname.startsWith(`${rota}/`)
   );
+
+  function irPara(url: string) {
+    window.location.href = url;
+  }
 
   async function sair() {
     try {
@@ -46,7 +49,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
         <div className="mb-12">
           <button
             type="button"
-            onClick={() => router.push("/dashboard?aba=agenda")}
+            onClick={() => irPara("/dashboard?aba=agenda")}
             className="text-left"
           >
             <h1 className="text-4xl font-bold leading-tight text-yellow-400">
@@ -62,47 +65,81 @@ export default function AppShell({ children }: { children: ReactNode }) {
         </div>
 
         <nav className="space-y-3">
-          <MenuLink href="/dashboard?aba=agenda" ativo={pathname === "/dashboard" && abaAtual === "agenda"}>
+          <MenuButton
+            ativo={
+              pathname === "/dashboard" &&
+              abaAtual === "agenda" &&
+              !acaoAtual
+            }
+            onClick={() => irPara("/dashboard?aba=agenda")}
+          >
             <span className="text-xl">▦</span>
             Dashboard
-          </MenuLink>
+          </MenuButton>
 
-          <MenuLink href="/dashboard?aba=agenda" ativo={pathname === "/dashboard" && abaAtual === "agenda"}>
+          <MenuButton
+            ativo={
+              pathname === "/dashboard" &&
+              abaAtual === "agenda" &&
+              !acaoAtual
+            }
+            onClick={() => irPara("/dashboard?aba=agenda")}
+          >
             <span className="text-xl">▣</span>
             Agenda
-          </MenuLink>
+          </MenuButton>
 
-          <MenuLink href="/dashboard?aba=clientes" ativo={pathname === "/dashboard" && abaAtual === "clientes"}>
+          <MenuButton
+            ativo={pathname === "/dashboard" && abaAtual === "clientes"}
+            onClick={() => irPara("/dashboard?aba=clientes")}
+          >
             <span className="text-xl">◉</span>
             Clientes
-          </MenuLink>
+          </MenuButton>
 
-          <MenuLink href="/dashboard?aba=financeiro" ativo={pathname === "/dashboard" && abaAtual === "financeiro"}>
+          <MenuButton
+            ativo={pathname === "/dashboard" && abaAtual === "financeiro"}
+            onClick={() => irPara("/dashboard?aba=financeiro")}
+          >
             <span className="text-xl">R$</span>
             Financeiro
-          </MenuLink>
+          </MenuButton>
 
-          <MenuLink href="/dashboard?aba=empresa" ativo={pathname === "/dashboard" && abaAtual === "empresa"}>
+          <MenuButton
+            ativo={pathname === "/dashboard" && abaAtual === "empresa"}
+            onClick={() => irPara("/dashboard?aba=empresa")}
+          >
             <span className="text-xl">✦</span>
             Empresa
-          </MenuLink>
+          </MenuButton>
 
           <div className="my-6 border-t border-zinc-900" />
 
-          <MenuLink href="/dashboard?acao=novo-cliente" ativo={false}>
+          <MenuButton
+            ativo={acaoAtual === "novo-cliente"}
+            onClick={() => irPara("/dashboard?aba=clientes&acao=novo-cliente")}
+          >
             <span className="text-xl">＋</span>
             Novo Cliente
-          </MenuLink>
+          </MenuButton>
 
-          <MenuLink href="/dashboard?acao=novo-agendamento" ativo={false}>
+          <MenuButton
+            ativo={acaoAtual === "novo-agendamento"}
+            onClick={() =>
+              irPara("/dashboard?aba=agenda&acao=novo-agendamento")
+            }
+          >
             <span className="text-xl">▤</span>
             Novo Agendamento
-          </MenuLink>
+          </MenuButton>
 
-          <MenuLink href="/dashboard?aba=agenda" ativo={false}>
+          <MenuButton
+            ativo={pathname === "/dashboard" && abaAtual === "protocolos"}
+            onClick={() => irPara("/dashboard?aba=protocolos")}
+          >
             <span className="text-xl">▧</span>
             Protocolos
-          </MenuLink>
+          </MenuButton>
         </nav>
 
         <div className="absolute bottom-8 left-6 right-6 border-t border-zinc-900 pt-8">
@@ -124,25 +161,26 @@ export default function AppShell({ children }: { children: ReactNode }) {
   );
 }
 
-function MenuLink({
-  href,
+function MenuButton({
   ativo,
+  onClick,
   children,
 }: {
-  href: string;
   ativo: boolean;
+  onClick: () => void;
   children: ReactNode;
 }) {
   return (
-    <Link
-      href={href}
+    <button
+      type="button"
+      onClick={onClick}
       className={
         ativo
-          ? "flex items-center gap-4 rounded-2xl bg-yellow-400 px-5 py-4 font-semibold text-black transition hover:bg-yellow-300"
-          : "flex items-center gap-4 rounded-2xl px-5 py-4 text-zinc-300 transition hover:bg-[#15100d] hover:text-white"
+          ? "flex w-full items-center gap-4 rounded-2xl bg-yellow-400 px-5 py-4 text-left font-semibold text-black transition hover:bg-yellow-300"
+          : "flex w-full items-center gap-4 rounded-2xl px-5 py-4 text-left text-zinc-300 transition hover:bg-[#15100d] hover:text-white"
       }
     >
       {children}
-    </Link>
+    </button>
   );
 }
