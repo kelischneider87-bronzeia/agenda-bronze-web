@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ReactNode } from "react";
 
 const ROTAS_COM_MENU = [
@@ -17,7 +17,10 @@ const ROTAS_COM_MENU = [
 
 export default function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
+
+  const abaAtual = searchParams.get("aba") || "agenda";
 
   const mostrarMenu = ROTAS_COM_MENU.some(
     (rota) => pathname === rota || pathname.startsWith(`${rota}/`)
@@ -59,22 +62,34 @@ export default function AppShell({ children }: { children: ReactNode }) {
         </div>
 
         <nav className="space-y-3">
-          <MenuLink href="/dashboard" ativo={pathname === "/dashboard"}>
+          <MenuLink
+            href="/dashboard"
+            ativo={pathname === "/dashboard" && abaAtual === "agenda"}
+          >
             <span className="text-xl">▦</span>
             Dashboard
           </MenuLink>
 
-          <MenuLink href="/dashboard?aba=agenda" ativo={false}>
+          <MenuLink
+            href="/dashboard?aba=agenda"
+            ativo={pathname === "/dashboard" && abaAtual === "agenda"}
+          >
             <span className="text-xl">▣</span>
             Agenda
           </MenuLink>
 
-          <MenuLink href="/dashboard?aba=clientes" ativo={false}>
+          <MenuLink
+            href="/dashboard?aba=clientes"
+            ativo={pathname === "/dashboard" && abaAtual === "clientes"}
+          >
             <span className="text-xl">◉</span>
             Clientes
           </MenuLink>
 
-          <MenuLink href="/dashboard?aba=financeiro" ativo={false}>
+          <MenuLink
+            href="/dashboard?aba=financeiro"
+            ativo={pathname === "/dashboard" && abaAtual === "financeiro"}
+          >
             <span className="text-xl">R$</span>
             Financeiro
           </MenuLink>
@@ -89,7 +104,10 @@ export default function AppShell({ children }: { children: ReactNode }) {
             Novo Agendamento
           </MenuLink>
 
-          <MenuLink href="/dashboard?aba=protocolos" ativo={false}>
+          <MenuLink
+            href="/dashboard?aba=protocolos"
+            ativo={pathname === "/dashboard" && abaAtual === "protocolos"}
+          >
             <span className="text-xl">▧</span>
             Protocolos
           </MenuLink>
